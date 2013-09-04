@@ -112,7 +112,7 @@ endif
 # See http://www.cryptopp.com/wiki/iOS_(Command_Line).
 ifeq ($(IS_IOS),1)
   CXX = clang++
-  CXXFLAGS += -fPIC -DCRYPTOPP_DISABLE_ASM -arch $(IOS_ARCH) --sysroot=$(IOS_SYSROOT)
+  CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM -arch $(IOS_ARCH) --sysroot=$(IOS_SYSROOT)
   AR = libtool
   ARFLAGS = -static -o
   LDFLAGS += -flat_namespace
@@ -188,7 +188,7 @@ libcryptopp.a: $(LIBOBJS)
 	$(RANLIB) $@
 
 libcryptopp.so: $(LIBOBJS)
-	$(CXX) -shared -o $@ $(LIBOBJS)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(LIBOBJS)
 
 libcryptopp.dylib: $(LIBOBJS)
 	$(CXX) $(CXXFLAGS) -dynamiclib -o $@ $(LDFLAGS) $(LIBOBJS)
