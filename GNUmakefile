@@ -112,10 +112,17 @@ endif
 # See http://www.cryptopp.com/wiki/iOS_(Command_Line).
 ifeq ($(IS_IOS),1)
   CXX = clang++
-  CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM -arch $(IOS_ARCH) --sysroot=$(IOS_SYSROOT)
+
+  CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM -arch $(IOS_ARCH)
+  ifeq ($(IOS_ARCH),arm64)
+    CXXFLAGS += -mios-version-min=7.0
+  endif
+  CXXFLAGS += --sysroot=$(IOS_SYSROOT)
+
   AR = libtool
   ARFLAGS = -static -o
   LDFLAGS += -flat_namespace
+
 endif
 
 ifeq ($(UNAME),SunOS)

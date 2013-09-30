@@ -93,6 +93,13 @@ do
 
   fi
 
+  #
+  # ARM64
+  if [ "$CL" == "arm64" ]; then
+    IOS_ARCH=arm64
+
+  fi
+
 done
 
 ########################################
@@ -206,6 +213,9 @@ case "$IOS_ARCH" in
       ;;
     armv7s)
       echo "Configuring for Device (ARMv7s)"
+      ;;
+    arm64)
+      echo "Configuring for Device (ARM64)"
       ;;
     *)
       echo "ERROR: unable to determine architecture."

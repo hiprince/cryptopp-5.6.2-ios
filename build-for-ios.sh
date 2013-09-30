@@ -24,7 +24,15 @@ make static
 mkdir armv7s
 \cp libcryptopp.a armv7s/libcryptopp.a
 
-# Third, build i386
+# Third, build ARM64
+echo "****************************************"
+. ./setenv-ios.sh arm64
+make clean
+make static
+mkdir arm64
+\cp libcryptopp.a arm64/libcryptopp.a
+
+# Fourth, build i386
 echo "****************************************"
 . ./setenv-ios.sh i386
 make clean
@@ -32,10 +40,10 @@ make static
 mkdir i386
 \cp libcryptopp.a i386/libcryptopp.a
 
-# Fourth, create the fat library
+# Fifth, create the fat library
 echo "****************************************"
 make clean
-lipo -create armv7/libcryptopp.a armv7s/libcryptopp.a i386/libcryptopp.a -output ./libcryptopp.a
+lipo -create armv7/libcryptopp.a armv7s/libcryptopp.a arm64/libcryptopp.a i386/libcryptopp.a -output ./libcryptopp.a
 
 # Fifth, verify the three architectures are present
 echo "****************************************"
@@ -47,7 +55,7 @@ rm *.so *.exe *.dylib
 
 # Seventh, install the library
 echo "****************************************"
-sudo make install PREFIX=/usr/local/cryptopp
+sudo make install PREFIX=/usr/local/cryptopp-ios
 
 
 
