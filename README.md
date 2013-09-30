@@ -7,6 +7,6 @@ If you only want to include, compile, and link, then only download cryptopp-5.6.
 
 The four images included in this collection show you how to configure an Xcode project using the files in the ZIP archive. The images are provided since you probably have a good idea of what you are doing. If you need detailed help, see the wiki page below.
 
-The additional files provided in the set are used to update the standard Crypto++ distribution and build the fat libcryptopp.a. If you don't care about building libcryptopp.a yourself, then ignore the additional files. If you do want to build the fat libcryptopp.a, then run `./build-for-ios.sh`. 
+The additional files provided in the set are used to update the standard Crypto++ distribution and build the fat libcryptopp.a. Place them in the same directory as Crypto++ source files (overwriting as necessary), and then run `./build-for-ios.sh`. If you don't care about building libcryptopp.a yourself, then ignore the additional files. 
 
 See http://www.cryptopp.com/wiki/iOS_(Command_Line) for details on how the environment was set, how the library was built and how to use the library in an Xcode project. If you have questions, then ask on the Crypto++ Users group at https://groups.google.com/forum/#!forum/cryptopp-users.
