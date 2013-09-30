@@ -1,11 +1,9 @@
 #! /bin/sh
 
-# Patch the makefile and config.h before running this script
-#   The patches can be found at http://www.cryptopp.com/wiki/IOS_(Command_Line).
-#   Or copy the updated files from this Github project.
-# Place setenv.ios.sh next to the makefile
-# Place build-for-ios.sh next to the makefile
-# Verify the install path at Step 7
+# Update the config.h and GNUmakefile before running this script.
+# The updated config.h and GNUmakefile are available with this Github project.
+# Place setenv.ios.sh and build-for-ios.sh next to the makefile.
+# Verify the install path used at Step 8 below.
 # Run ./build-for-ios.sh
 
 # First, build ARMv7
@@ -45,17 +43,14 @@ echo "****************************************"
 make clean
 lipo -create armv7/libcryptopp.a armv7s/libcryptopp.a arm64/libcryptopp.a i386/libcryptopp.a -output ./libcryptopp.a
 
-# Fifth, verify the three architectures are present
+# Sixth, verify the three architectures are present
 echo "****************************************"
 xcrun -sdk iphoneos lipo -info libcryptopp.a
 
-# Sixth, remove unneeded artifacts
+# Seventh, remove unneeded artifacts
 echo "****************************************"
 rm *.so *.exe *.dylib
 
-# Seventh, install the library
+# Eigth, install the library
 echo "****************************************"
 sudo make install PREFIX=/usr/local/cryptopp-ios
-
-
-

@@ -76,28 +76,24 @@ do
   # ARMv6
   if [ "$CL" == "armv6" ]; then
     IOS_ARCH=armv6
-
   fi
 
   #
   # ARMv7
   if [ "$CL" == "armv7" ]; then
     IOS_ARCH=armv7
-
   fi
 
   #
   # ARMv7s
   if [ "$CL" == "armv7s" ]; then
     IOS_ARCH=armv7s
-
   fi
 
   #
   # ARM64
   if [ "$CL" == "arm64" ]; then
     IOS_ARCH=arm64
-
   fi
 
 done
