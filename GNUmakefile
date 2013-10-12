@@ -113,14 +113,8 @@ endif
 ifeq ($(IS_IOS),1)
   CXX = clang++
 
-  CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM -arch $(IOS_ARCH)
-  ifeq ($(IOS_ARCH),armv7s)
-    CXXFLAGS += -mios-version-min=6.0
-  endif
-  ifeq ($(IOS_ARCH),arm64)
-    CXXFLAGS += -mios-version-min=7.0
-  endif
-  CXXFLAGS += --sysroot=$(IOS_SYSROOT)
+  CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM
+  CXXFLAGS += -arch $(IOS_ARCH) -isysroot $(IOS_SYSROOT)
 
   AR = libtool
   ARFLAGS = -static -o

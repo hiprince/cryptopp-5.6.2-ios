@@ -51,6 +51,8 @@ xcrun -sdk iphoneos lipo -info libcryptopp.a
 echo "****************************************"
 rm *.so *.exe *.dylib
 
-# Eigth, install the library
+# Eighth, install the library
 echo "****************************************"
+read -p "Press [ENTER] to install, or [CTRL]+C to quit"
+
 sudo make install PREFIX=/usr/local/cryptopp-ios
