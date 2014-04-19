@@ -14,7 +14,7 @@ UNAME = $(shell uname)
 ISX86 = $(shell uname -m | $(EGREP) -c "i.86|x86|i86|amd64")
 IS_SUN_CC = $(shell $(CXX) -V 2>&1 | $(EGREP) -c "CC: Sun")
 IS_LINUX = $(shell $(CXX) -dumpmachine 2>&1 | $(EGREP) -c "linux")
-IS_DARWIN = $(shell uname -m | $(EGREP) -i -c "Darwin")
+IS_DARWIN = $(shell uname -s | $(EGREP) -i -c "Darwin")
 IS_MINGW = $(shell $(CXX) -dumpmachine 2>&1 | $(EGREP) -c "mingw")
 CLANG_COMPILER = $(shell $(CXX) --version 2>&1 | $(EGREP) -i -c "clang")
 
@@ -97,15 +97,15 @@ endif
 endif
 
 ifeq ($(IS_DARWIN),1)
-AR = libtool
-ARFLAGS = -static -o
-CXX = c++
-IS_GCC2 = $(shell $(CXX) -v 2>&1 | $(EGREP) -c gcc-932)
-ifeq ($(IS_GCC2),1)
-CXXFLAGS += -fno-coalesce-templates -fno-coalesce-static-vtables
-LDLIBS += -lstdc++
-LDFLAGS += -flat_namespace -undefined suppress -m
-endif
+  AR = libtool
+  ARFLAGS = -static -o
+  CXX = clang++
+  CXXFLAGS += -stdlib=libc++
+  IS_GCC2 = $(shell $(CXX) -v 2>&1 | $(EGREP) -c gcc-932)
+  ifeq ($(IS_GCC2),1)
+    CXXFLAGS += -fno-coalesce-templates -fno-coalesce-static-vtables
+    LDFLAGS += -flat_namespace -undefined suppress -m
+  endif
 endif
 
 # Begin iOS cross-compile configuration.
@@ -115,11 +115,11 @@ ifeq ($(IS_IOS),1)
 
   CXXFLAGS = -DNDEBUG -g -Os -pipe -fPIC -DCRYPTOPP_DISABLE_ASM
   CXXFLAGS += -arch $(IOS_ARCH) -isysroot $(IOS_SYSROOT)
+  CXXFLAGS += -stdlib=libc++
 
   AR = libtool
   ARFLAGS = -static -o
   LDFLAGS += -flat_namespace
-
 endif
 
 ifeq ($(UNAME),SunOS)
