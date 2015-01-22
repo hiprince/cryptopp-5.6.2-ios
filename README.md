@@ -1,9 +1,9 @@
 cryptopp-5.6.2-ios
 ==================
 
-Crypto++ 5.6.2 (revision 541) built for ARMv7, ARMv7s, ARM64 and i386 simulator. The libraries were built using the iOS 7.0 SDK and libc++ standard library. The ZIP includes one common set of headers and one fat libcryptopp.a with the four architectures.
+Crypto++ 5.6.2 (revision 541) built for ARMv7, ARMv7s, ARM64 (devices) and x86_64, i386 (simulators). The libraries were built using the iOS 7.0 SDK and LLVM libc++ runtime library (not the GNU libstdc++ runtime). The ZIP includes one common set of headers and one fat libcryptopp.a with the five architectures.
 
-If you only want to include, compile, and link, then only download cryptopp-5.6.2-ios-7.0.zip. It has everything you need for an Xcode or command line project. Unzip the ZIP archive and place it in a convenient location. Use `unzip -a` to ensure CRLF are handled properly. `/usr/local/cryptopp-ios/` is a good location since it is world readable and write protected.
+If you only want to include and link to Crypto++, then only download cryptopp-5.6.2-ios-7.0.zip. It has everything you need for an Xcode or command line project. Unzip the ZIP archive and place it in a convenient location. Use `unzip -a` to ensure CRLF are handled properly. `/usr/local/cryptopp-ios/` is a good location since it is world readable and write protected.
 
 Note: while the Crypto++ library is mutli-arch, Xcode cannot currently create iOS 6 mutli-arch apps when the app contains both 32-bit and 64-bit components. For example, ARMv7 is 32-bit and ARM64 is 64-bit, so Xcode will not be able to create the fat binary. This is an Apple/Xcode limitation, and Apple claims it will be fixed soon. For details, see  http://lists.apple.com/archives/xcode-users/2013/Oct/msg00074.html.
 

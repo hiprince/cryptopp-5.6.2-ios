@@ -25,6 +25,7 @@ SETENV_VERBOSE=1
 
 # Default architecture
 IOS_ARCH=armv7
+IOS_FLAGS=
 
 ########################################
 #####         Command line         #####
@@ -67,6 +68,12 @@ do
   fi
 
   #
+  # i386 (simulator)
+  if [ "$CL" == "x86_64" ]; then
+    IOS_ARCH=x86_64
+  fi
+
+  #
   # ARMv5
   if [ "$CL" == "armv5" ]; then
     IOS_ARCH=armv5
@@ -76,24 +83,28 @@ do
   # ARMv6
   if [ "$CL" == "armv6" ]; then
     IOS_ARCH=armv6
+
   fi
 
   #
   # ARMv7
   if [ "$CL" == "armv7" ]; then
     IOS_ARCH=armv7
+
   fi
 
   #
   # ARMv7s
   if [ "$CL" == "armv7s" ]; then
     IOS_ARCH=armv7s
+
   fi
 
   #
   # ARM64
   if [ "$CL" == "arm64" ]; then
     IOS_ARCH=arm64
+
   fi
 
 done
@@ -129,7 +140,7 @@ fi
 
 #
 # XCODE_DEVELOPER_TOP is the top of the development tools tree
-if [ "$IOS_ARCH" == "i386" ]; then
+if [ "$IOS_ARCH" == "i386" ] || [ "$IOS_ARCH" == "x86_64" ]; then
   XCODE_DEVELOPER_TOP="$XCODE_DEVELOPER/Platforms/iPhoneSimulator.platform/Developer"
   if [ ! -d "$XCODE_DEVELOPER_TOP" ]; then
     echo "ERROR: unable to find Xcode Simulator directory."
@@ -162,11 +173,12 @@ export IOS_TOOLCHAIN
 # XCODE_SDK is the SDK name/version being used - adjust the list as appropriate.
 # For example, remove 4.3, 6.2, and 6.1 if they are not installed. Note: Apple 
 # makes this available under Xcode via $(SDK_NAME).
-for i in 7.2 7.1 7.0 6.2 6.1 6.0 5.1 5.0 4.3 do
+for i in 8.2 8.1 8.0 7.2 7.1 7.0 6.2 6.1 6.0 5.1 5.0 4.3 do
 # for i in 0.1 0.5 1.0 2.0 do
+# for i in 6.1 6.0 5.1 5.0 4.3 do
 do
 
-  if [ "$IOS_ARCH" == "i386" ]; then
+  if [ "$IOS_ARCH" == "i386" ] || [ "$IOS_ARCH" == "x86_64" ]; then
     if [ -d "$XCODE_DEVELOPER/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator"$i".sdk" ]; then
       SDKVER=$i
       XCODE_SDK=iPhoneSimulator"$SDKVER".sdk
@@ -182,6 +194,24 @@ do
 done
 
 #
+# ARMv7s. Xcode 4/iOS 6
+if [ "$IOS_ARCH" == "armv7s" ]; then
+  IOS_FLAGS=-miphoneos-version-min=6
+fi
+
+#
+# ARM64. Xcode 5/iOS 7
+if [ "$IOS_ARCH" == "arm64" ]; then
+  IOS_FLAGS=-miphoneos-version-min=7
+fi
+
+#
+# ARM64 Simulator. Under Xcode 6/iOS 8, it uses x86_64 and not i386
+if [ "$IOS_ARCH" == "x86_64" ]; then
+  IOS_FLAGS=-miphoneos-version-min=8
+fi
+
+#
 # Die if we did not find an SDK
 if [ -z "$SDKVER" ]; then
   echo "ERROR: unable to find a valid SDK."
@@ -189,7 +219,7 @@ if [ -z "$SDKVER" ]; then
 fi
 
 #
-# Simulator uses i386, Device uses ARMv5, ARMv6, ARMv7, or ARMv7s
+# Simulator uses i386 or x86_64, Device uses ARMv5, ARMv6, ARMv7, or ARMv7s
 #
 # Apple deprecated ARMv5 at iOS 4.0, and ARMv6 at iOS 5.0
 # http://stackoverflow.com/questions/7488657/how-to-build-for-armv6-and-armv7-architectures-with-ios-5
@@ -197,6 +227,9 @@ fi
 case "$IOS_ARCH" in
     i386)
       echo "Configuring for Simulator (i386)"
+      ;;
+    x86_64)
+      echo "Configuring for Simulator (x86_64)"
       ;;
     armv5)
       echo "Configuring for Device (ARMv5)"
@@ -224,6 +257,10 @@ esac
 export IOS_ARCH
 
 #
+# Additional CXXFLAGS used by the makefile.
+export IOS_FLAGS
+
+#
 # --sysroot is used by the makefile.
 export IOS_SYSROOT="$XCODE_DEVELOPER_TOP"/SDKs/"$XCODE_SDK"
 
@@ -239,6 +276,7 @@ if [ "$SETENV_VERBOSE" == "1" ]; then
   echo "XCODE_DEVELOPER_TOP: $XCODE_DEVELOPER_TOP"
   echo "IOS_ARCH: $IOS_ARCH"
   echo "IOS_TOOLCHAIN: $IOS_TOOLCHAIN"
+  echo "IOS_FLAGS: $IOS_FLAGS"
   echo "IOS_SYSROOT: $IOS_SYSROOT"
 fi
 
@@ -282,7 +320,7 @@ fi
 FOUND_ALL=1
 
 # Apple's embedded g++ cannot compile integer.cpp
-TARGET_TOOLS="llvm-gcc llvm-g++ ar ranlib libtool ld"
+TARGET_TOOLS="clang clang++ ar ranlib libtool ld"
 for tool in $TARGET_TOOLS
 do
   if [ ! -e "$IOS_TOOLCHAIN/$tool" ] && [ ! -e "$XCODE_TOOLCHAIN/$tool" ]; then

@@ -1,11 +1,6 @@
 #ifndef CRYPTOPP_CONFIG_H
 #define CRYPTOPP_CONFIG_H
 
-// For TARGET_OS_IPHONE and TARGET_IPHONE_SIMULATOR
-#if defined(__APPLE__)
-# include "TargetConditionals.h"
-#endif
-
 // ***************** Important Settings ********************
 
 // define this if running on a big-endian CPU
@@ -50,6 +45,22 @@
 
 // set the name of Rijndael cipher, was "Rijndael" before version 5.3
 #define CRYPTOPP_RIJNDAEL_NAME "AES"
+
+// For TARGET_OS_IPHONE and TARGET_IPHONE_SIMULATOR
+#if defined(__APPLE__)
+# include "TargetConditionals.h"
+
+# if defined(TARGET_IPHONE_SIMULATOR) && (TARGET_IPHONE_SIMULATOR != 0)
+#  define CRYPTOPP_IPHONE_SIMULATOR 1
+# elif defined(TARGET_OS_IPHONE) && (TARGET_OS_IPHONE != 0)
+#  define CRYPTOPP_IPHONE 1
+# elif defined(TARGET_OS_MAC) && (TARGET_OS_MAC != 0)
+#  define CRYPTOPP_MAC_OSX 1
+# else
+#  error Unknown Apple platform
+# endif
+
+#endif /* Apple */
 
 // ***************** Important Settings Again ********************
 // But the defaults should be ok.
@@ -245,7 +256,7 @@ NAMESPACE_END
 
 // For cross-compiles, just ignore host settings that bleed through for Xcode/iOS
 // We will accidentally catch some device builds that use x86 on Android.
-#if defined(__ANDROID__) || defined(TARGET_OS_IPHONE) || defined(TARGET_IPHONE_SIMULATOR)
+#if defined(__ANDROID__) || defined(CRYPTOPP_IPHONE) || defined(CRYPTOPP_IPHONE_SIMULATOR)
 # define CRYPTOPP_DISABLE_ASM 1
 # define CRYPTOPP_DISABLE_SSE2 1
 # define CRYPTOPP_DISABLE_SSE3 1
@@ -358,7 +369,7 @@ NAMESPACE_END
 
 // For cross-compiles, just ignore host settings that bleed through for Xcode/iOS
 // We will accidentally catch some device builds that use x86 on Android.
-#if defined(__ANDROID__) || defined(TARGET_OS_IPHONE) || defined(TARGET_IPHONE_SIMULATOR)
+#if defined(__ANDROID__) || defined(CRYPTOPP_IPHONE) || defined(CRYPTOPP_IPHONE_SIMULATOR)
 # undef CRYPTOPP_ALLOW_UNALIGNED_DATA_ACCESS
 
 # undef CRYPTOPP_BOOL_X86
@@ -384,6 +395,10 @@ NAMESPACE_END
 
 #if defined(CRYPTOPP_WIN32_AVAILABLE) || defined(CRYPTOPP_UNIX_AVAILABLE)
 #	define HIGHRES_TIMER_AVAILABLE
+#endif
+
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY==WINAPI_FAMILY_PHONE_APP)
+#	undef HIGHRES_TIMER_AVAILABLE
 #endif
 
 #ifdef CRYPTOPP_UNIX_AVAILABLE

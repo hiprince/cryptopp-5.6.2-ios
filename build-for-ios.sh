@@ -30,7 +30,7 @@ make static
 mkdir arm64
 \cp libcryptopp.a arm64/libcryptopp.a
 
-# Fourth, build i386
+# Fourth, build i386 (32-bit simulators)
 echo "****************************************"
 . ./setenv-ios.sh i386
 make clean
@@ -38,20 +38,28 @@ make static
 mkdir i386
 \cp libcryptopp.a i386/libcryptopp.a
 
-# Fifth, create the fat library
+# Fifth, build x86_64 (64-bit simulators)
+echo "****************************************"
+. ./setenv-ios.sh x86_64
+make clean
+make static
+mkdir x86_64
+\cp libcryptopp.a x86_64/libcryptopp.a
+
+# Sixth, create the fat library
 echo "****************************************"
 make clean
-lipo -create armv7/libcryptopp.a armv7s/libcryptopp.a arm64/libcryptopp.a i386/libcryptopp.a -output ./libcryptopp.a
+lipo -create armv7/libcryptopp.a armv7s/libcryptopp.a arm64/libcryptopp.a i386/libcryptopp.a x86_64/libcryptopp.a -output ./libcryptopp.a
 
-# Sixth, verify the three architectures are present
+# Seventh, verify the four architectures are present
 echo "****************************************"
 xcrun -sdk iphoneos lipo -info libcryptopp.a
 
-# Seventh, remove unneeded artifacts
+# Eighth, remove unneeded artifacts
 echo "****************************************"
 rm *.so *.exe *.dylib
 
-# Eighth, install the library
+# Ninth, install the library
 echo "****************************************"
 read -p "Press [ENTER] to install, or [CTRL]+C to quit"
 
